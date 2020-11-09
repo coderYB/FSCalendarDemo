@@ -68,6 +68,7 @@ static NSString *const cellIdOfFSCalendarCell = @"FSCalendarCell";
         self.pagingEnabled = YES;
         self.bounces = NO;
         self.delegate = self;
+        self.scrollsToTop = NO;
         
         self.contentSize = CGSizeMake(3 * self.bounds.size.width, self.bounds.size.height);
         [self setContentOffset:CGPointMake(self.bounds.size.width, 0.0) animated:NO];
@@ -254,6 +255,9 @@ static NSString *const cellIdOfFSCalendarCell = @"FSCalendarCell";
     // 刷新collectionViews
     [self reloadCollectionViews];
     
+    // 回到今天，需要重新设置scrollView的偏移量
+    [self setScrollViewContentOffset];
+    
     // 回传日期
     [self passDate];
 }
@@ -303,6 +307,14 @@ static NSString *const cellIdOfFSCalendarCell = @"FSCalendarCell";
         return;
     }
 
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    if (scrollView.contentOffset.x == kScreenWidth && scrollView.contentOffset.y == 0.00f && self.isShowSingle) {
+        
+        [self setScrollViewContentOffset];
+    }
 }
 
 #pragma mark ---- 设置scrollView的偏移量 ----
